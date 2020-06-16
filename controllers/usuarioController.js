@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Usuario = mongoose.model("Usuario")
 //const enviarEmailRecovery = require("../helpers/email-recovery")
-//const usuarios = require("../models/usuarios")
+const usuarios = require("../models/usuarios")
 
 class UsuarioContrller {
     //Get
