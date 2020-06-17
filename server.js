@@ -21,7 +21,7 @@ app.use("/public/images", express.static(__dirname + "/public/images"))
 
 // SETUO MONGODB
 const dbs = require("./config/database")
-const dbURI = isProduction ? dbs.dbProduction : dbs.dbTeste
+const dbURI = isProduction ? dbs.dbProduction : dbs.dbTest
 mongoose.connect(dbURI, {useNewUrlParser: true})
 
 // CONFIGURAÇÃO

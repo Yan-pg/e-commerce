@@ -1,5 +1,5 @@
 const jwt = require("express-jwt")
-const secret = require("../confg").secret
+const secret = require("../config").secret
 
 function getTokenFromHeader(req01){
     if(!req1.headers.authorization) return null

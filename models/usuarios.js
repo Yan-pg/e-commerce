@@ -5,7 +5,7 @@ const  crypto = require("crypto")
 const jwt = require("jsonwebtoken")
 const scret = require("../config").secret
 
-const UsuarioSchama = new mongoose.Shema({
+const UsuarioSchema = new mongoose.Schema ({
     nome: {
         type: String,
         require:[true, "Não pode ficar vazio."]
@@ -37,19 +37,19 @@ const UsuarioSchama = new mongoose.Shema({
     }
 },{ timestamps: true })
 
-UsuarioSchama.plugin(uniqueValidator, {message: "já está sendo utilizado"})
+UsuarioSchema.plugin(uniqueValidator, {message: "já está sendo utilizado"})
 
-UsuarioSchama.methods.setSenha = function(passoword){
+UsuarioSchema.methods.setSenha = function(passoword){
     this.salt = crypto.randomBytes(16).toString("hex")
     this.hash = crypto.pbkdf2Sync(passoword, this.salt, 1000, 512, "sha512").toString("hex")
 }
 
-UsuarioSchama.methods.validarSenha = function(passoword){
+UsuarioSchema.methods.validarSenha = function(passoword){
     const hash = crypto.pbkdf2Sync(passoword, this.salt, 1000, 512, "sha512").toString
     return hash === this.hash
 }
 
-UsuarioSchama.methods.gerarToken = function(){
+UsuarioSchema.methods.gerarToken = function(){
     const hoje = new Data()
     const exp = new Data(today)
     exp.setDate(today.getDate() + 15)
@@ -74,15 +74,15 @@ UsuarioSchema.methods.enviarAuthJSON = function(){
     }; 
 };
 // RECUPERARCAO
-UsuarioSchama.methods.criarTokennRecuperacaoSenha = function(){
+UsuarioSchema.methods.criarTokennRecuperacaoSenha = function(){
     this.recovery = {}
     this.recovery.token = crypto.randomBytes(16).toString("hex")
     this.recovery.date = new Date(new Date().getTime() + 24*60*1000)
     return this.recovery
 }
-UsuarioSchama.methods.finalizarTokenRecuperacaoSenha = function(){
+UsuarioSchema.methods.finalizarTokenRecuperacaoSenha = function(){
     this.recovery = { token: null, date: null }
     return this.recovery
 }
 
-module.exports = mongoose.model("Usuario", UsuarioSchama)
+module.exports = mongoose.model("Usuario", UsuarioSchema)
