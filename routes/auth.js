@@ -9,11 +9,11 @@ function getTokenFromHeader(req01){
 }
 
 const auth = {
-    require: jwt({
+    required: jwt({
         secret, 
         userProperty: 'payload',
         getToken: getTokenFromHeader
-    }),
+    }), 
     optional: jwt({
         secret, 
         userProperty: 'payload',

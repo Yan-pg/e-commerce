@@ -1,9 +1,9 @@
 const mongoose = require("mongoose"),
     Schema = mongoose.Schema
 const uniqueValidator = require('mongoose-unique-validator')
-const  crypto = require("crypto")
+const crypto = require("crypto")
 const jwt = require("jsonwebtoken")
-const scret = require("../config").secret
+const secret = require("../config").secret
 
 const UsuarioSchema = new mongoose.Schema ({
     nome: {
@@ -14,13 +14,13 @@ const UsuarioSchema = new mongoose.Schema ({
         type: String,
         lowercase: true,
         unique: true,
-        require: [true, "Não pode ficar vazio."],
+        required: [true, "Não pode ficar vazio."],
         index: true
     },
     loja: {
         type: Schema.Types.ObjectId,
         ref: "Loja",
-        require: [true, "Não pode ficar vazia"]
+        required: [true, "Não pode ficar vazia"]
     },
     permissao: {
         typre: Array,
