@@ -1,20 +1,23 @@
 const mongoose = require("mongoose")
 const Usuario = mongoose.model("Usuario")
-//const enviarEmailRecovery = require("../helpers/email-recovery")
-const usuarios = require("../models/usuarios")
+const enviarEmailRecovery = require("../helpers/email-recovery")
+//const usuarios = require("../models/usuarios")
 
 class UsuarioContrller {
     //Get
     index(req, res, next){
        Usuario.findById(req.payload.id).then(usuario => {
-           if(!usuarios) return res.status(401).json({ errors: "Usuario não registrado"})
+           if(!usuario) return res.status(401).json({ errors: "Usuario não registrado"})
            return res.json({ usuario: usuario.enviarAuthJSON() })
-       }).catch(next)
+       }).catch((err) => {
+           console.log("Ocorreu um erro: "+err)
+           next(err)
+       })
     }
 
     //GET /:ID
     show(req, res, next){
-        Usuario.findById(req.params.id).populate({ path: "loja "}).then(usuario => {
+        Usuario.findById(req.params.id)/*.populate({ path: "loja "})*/.then(usuario => {
             if(!usuario) return res.status(401).json({errors: "usuarios não registrado"})
             return res.json({
                 usuario: {
@@ -24,23 +27,29 @@ class UsuarioContrller {
                     loja: usuario.loja
                 }
             })
-        }).catch(next)
+        }).catch((err) => {
+            console.log("Ocorreu um um erro: "+err)
+            next(err)
+        })
     }
 
     //POST /registrar
 
     store(req, res, next){
-        const { nome, email, password} = req.body
+        const { nome, email, password, loja} = req.body
 
-        if( !nome || !email || !password) return res.status(422).json({ errors: "Preecha todos os campos de cadastro"})
+        if( !nome || !email || !password || !loja) return res.status(422).json({ errors: "Preecha todos os campos de cadastro"})
 
-        const usuario = new Usuario({ nome, email })
+        const usuario = new Usuario({ nome, email, loja })
         usuario.setSenha(password)
 
         usuario.save()
         .then(() => res.json({ usuario: usuario.enviarAuthJSON() }))
-        .catch(next)
-    }
+        .catch((err) => {
+            console.log("Ocorreu um erro: " +err)
+            next(err)
+        })
+    }  
 
 
     //PUT /
@@ -78,25 +87,31 @@ class UsuarioContrller {
             if(!usuario) return res.status(401).json({ erros: "Usuario não registrado"})
             if(!usuario.validarSenha(password)) return res.status(401).json({ errors: "Senha inválida"})
             return res.json({ usuario: usuario.enviarAuthJSON()})
-        }).catch(next)
+        }).catch((err) => {
+            console.log("Ocorreu um erro: "+err) 
+            next(err)
+        })
     }
 
     //RECOVERY
     
     //get/ recuperar-senha
     showRecovery(req, res, next){
-        return res.render('recovery', { error: null, sucess: null})
+        return res.render('recovery', { error: null, success: null})
     }
+    
+    //POST / recuperar senha
 
     createRecovery(req, res, next){
         const { email } = req.body
         if(!email) return res.render('recovery', {error: "Preencha com seu email", success: null})
     
         Usuario.findOne({email}).then((usuario) => {
-            if(!usuario) return res.render("recovery", {error: "Não existe usuário com este email", seccess: null})
-            const recoveryDate = usuario.criarTokenRecuperacaoSenha()
+            if(!usuario) return res.render("recovery", {error: "Não existe usuário com este email", success: null})
+            const recoveryDate = usuario.criarTokenRecuperacaoSenha() // usuario.criarTokenRecuperacaoSenha is not a function
             return usuario.save().then(() => {
-                return res.render("recovery", { error: null, success: true})
+                enviarEmailRecovery({ usuario, recovery: recoveryDate}, (error = null, success = null))
+                return res.render("recovery", { error, success})
             }).catch(next)
         }).catch(next)
     }
@@ -106,7 +121,7 @@ class UsuarioContrller {
         Usuario.findOne({ "recovery.token": req.query.token }).then(usuario => {
             if(!usuario) return res.render("recovery", { error: "Não ecciste usuário com este token", success:null})
             if( new Date(usuario.recovery.date) < new Date()) return res.render("recovery", {error: "Token expirado novamente.", success: null}) 
-            return res.render("recovery/store", { error:null, soccess: null, token: req.query.token})
+            return res.render("recovery/store", { error:null, success: null, token: req.query.token})
         }).catch(next)
     }
 

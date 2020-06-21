@@ -22,7 +22,15 @@ app.use("/public/images", express.static(__dirname + "/public/images"))
 // SETUO MONGODB
 const dbs = require("./config/database")
 const dbURI = isProduction ? dbs.dbProduction : dbs.dbTest
-mongoose.connect(dbURI, {useNewUrlParser: true})
+mongoose.connect(dbURI, {useNewUrlParser: true}).then(() => {
+    console.log("Mongo conectado...")
+}).catch((err) => {
+    console.log("Ocorreu um erro ao se conectar com mongo:  "+err)
+})
+
+// SETUP EJS
+app.set("view engine", "ejs")
+
 
 // CONFIGURAÇÃO
 if(!isProduction) app.use(morgan("dev"))

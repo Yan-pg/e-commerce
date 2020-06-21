@@ -8,14 +8,14 @@ const secret = require("../config").secret
 const UsuarioSchema = new mongoose.Schema ({
     nome: {
         type: String,
-        require:[true, "Não pode ficar vazio."]
+        required:[true, "Não pode ficar vazio."]
     },
     email : {
         type: String,
         lowercase: true,
         unique: true,
         required: [true, "Não pode ficar vazio."],
-        index: true
+        index: true, 
     },
     loja: {
         type: Schema.Types.ObjectId,
@@ -50,17 +50,17 @@ UsuarioSchema.methods.validarSenha = function(passoword){
 }
 
 UsuarioSchema.methods.gerarToken = function(){
-    const hoje = new Data()
-    const exp = new Data(today)
-    exp.setDate(today.getDate() + 15)
+    const hoje = new Date()
+    const exp = new Date(hoje)
+    exp.setDate(hoje.getDate() + 15)
 
     
     return jwt.sign({
         id: this._id,
         email: this.email,
         nome: this.nome,
-        exp: parseFloat(exp,getTime() / 1000, 10)
-    }, scret)
+        exp: parseFloat(exp.getTime() / 1000, 10)
+    }, secret)
 }
 UsuarioSchema.methods.enviarAuthJSON = function(){ 
 
