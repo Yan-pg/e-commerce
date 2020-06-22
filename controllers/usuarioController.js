@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Usuario = mongoose.model("Usuario")
 const enviarEmailRecovery = require("../helpers/email-recovery")
-//const usuarios = require("../models/usuarios")
+
 
 class UsuarioContrller {
     //Get
@@ -56,7 +56,7 @@ class UsuarioContrller {
 
     update(req, res, next){
         const { nome, email, password } = req.body
-        Usuario.findById(req, payload.id).then((usuario) => {
+        Usuario.findById(req.payload.id).then((usuario) => {
             if(!usuario) return res.status(401).json({errors: "Usuario nao registrado"})
             if(typeof nome!== "undefined") usuario.nome = nome
             if(typeof email!== "undefined") usuario.email = email
@@ -95,7 +95,7 @@ class UsuarioContrller {
 
     //RECOVERY
     
-    //get/ recuperar-senha
+    //get/ recuperar-senha  
     showRecovery(req, res, next){
         return res.render('recovery', { error: null, success: null})
     }
@@ -107,10 +107,10 @@ class UsuarioContrller {
         if(!email) return res.render('recovery', {error: "Preencha com seu email", success: null})
     
         Usuario.findOne({email}).then((usuario) => {
-            if(!usuario) return res.render("recovery", {error: "Não existe usuário com este email", success: null})
-            const recoveryDate = usuario.criarTokenRecuperacaoSenha() // usuario.criarTokenRecuperacaoSenha is not a function
+            if(!usuario) return res.render("recovery", { error: "Não existe usuário com este email", success: null})
+            const recoveryDate = usuario.criarTokenRecuperacaoSenha()
             return usuario.save().then(() => {
-                enviarEmailRecovery({ usuario, recovery: recoveryDate}, (error = null, success = null))
+                enviarEmailRecovery({ usuario, recovery: recoveryDate}, (error = null, success = null ))
                 return res.render("recovery", { error, success})
             }).catch(next)
         }).catch(next)

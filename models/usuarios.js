@@ -23,7 +23,7 @@ const UsuarioSchema = new mongoose.Schema ({
         required: [true, "Não pode ficar vazia"]
     },
     permissao: {
-        typre: Array,
+        type: Array,
         default: ["cliente"]
     },
     hash: String,
@@ -45,7 +45,7 @@ UsuarioSchema.methods.setSenha = function(passoword){
 }
 
 UsuarioSchema.methods.validarSenha = function(passoword){
-    const hash = crypto.pbkdf2Sync(passoword, this.salt, 1000, 512, "sha512").toString
+    const hash = crypto.pbkdf2Sync(passoword, this.salt, 1000, 512, "sha512").toString("hex")
     return hash === this.hash
 }
 
@@ -74,7 +74,7 @@ UsuarioSchema.methods.enviarAuthJSON = function(){
     }; 
 };
 // RECUPERARCAO
-UsuarioSchema.methods.criarTokennRecuperacaoSenha = function(){
+UsuarioSchema.methods.criarTokenRecuperacaoSenha = function(){
     this.recovery = {}
     this.recovery.token = crypto.randomBytes(16).toString("hex")
     this.recovery.date = new Date(new Date().getTime() + 24*60*1000)
