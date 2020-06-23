@@ -2,7 +2,7 @@ const transporter = require("nodemailer").createTransport(require("../config/ema
 const { api: link} = require("../config/index")
 
 module.exports = ({ usuario, recovery }, cb) =>{
-    const mesagem = `
+    const message = `
         <h1 style="text-align: center;">Recuperação de senha</h1>
         <br />
         <p>Aqui está o link para redefinir a sua senha. Acesse ele e digite sua nova senha</p>
@@ -32,6 +32,6 @@ module.exports = ({ usuario, recovery }, cb) =>{
         })
     }else{
         console.log(opcaoesEmail)
-        return cd(null, "Link para redefinicao de senha foi enviado com sucesso para seu email.")
+        return cb(null, "Link para redefinicao de senha foi enviado com sucesso para seu email.")
     }
 }

@@ -2,15 +2,11 @@
 <html lang="pt-BR">
 <head>
     <% include ../partials/header %>
-    <link rel="stylesheet" href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css​
-
-
-    ">
 </head>
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-sm6 col-sm-offset-3">
+            <div class="col-sm-10 col-sm-offset-3">
                 <h2>Recuperar Senha</h2>
                 <hr /><br /> 
                 <% if(success) { %>
@@ -28,10 +24,9 @@
                 <% } %>    
             <% if(!success){ %>
                 <p>Digite aqui sua nova senha</p>
-            <form action="/api/v1/usuarios/recuperar-senha" method="POST">
+            <form action="/api/v1/usuarios/senha-recuperada" method="POST">
+                <input type="hidden" name="token" value="<%= token %>"/>
                 <div class="form-group">
-                    <input type="hidden" name="token" value="<%= token %>"
-                    >
                     <input 
                     type="password"
                     name="password"
