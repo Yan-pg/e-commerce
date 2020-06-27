@@ -24,7 +24,7 @@
                 <% } %>    
             <% if(!success){ %>
                 <p>Digite aqui sua nova senha</p>
-            <form action="/api/v1/usuarios/senha-recuperada" method="POST">
+            <form action="/v1/api/usuarios/senha-recuperada" method="POST">
                 <input type="hidden" name="token" value="<%= token %>"/>
                 <div class="form-group">
                     <input 

@@ -38,8 +38,6 @@ class UsuarioContrller {
     store(req, res, next){
         const { nome, email, password, loja} = req.body
 
-        if( !nome || !email || !password || !loja) return res.status(422).json({ errors: "Preecha todos os campos de cadastro"})
-
         const usuario = new Usuario({ nome, email, loja })
         usuario.setSenha(password)
 
@@ -131,7 +129,7 @@ class UsuarioContrller {
             if(!usuario) return res.render("recovery", { error: "Usuario nao indentificado", success: null})
           
 
-            usuario.finalizarTokenRecuperarcaoSenha()
+            usuario.finalizarTokenRecuperacaoSenha()
             usuario.setSenha(password)
             return usuario.save().then(() => {
                 return res.render("recovery/store", {

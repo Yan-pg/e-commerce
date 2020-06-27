@@ -3,7 +3,7 @@ const auth = require("../../auth")
 const UsuarioController = require("../../../controllers/usuarioController") 
 
 const Validation = require("express-validation")
-const {UsuarioValidation} = require("../../../controllers//validacoes/usuarioValidation")
+const {UsuarioValidation} = require("../../../controllers/validacoes/usuarioValidation")
 
 const usuarioController =  new UsuarioController()
 

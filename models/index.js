@@ -1,2 +1,5 @@
-require("./usuarios")
 require("./loja")
+require("./usuarios")
+require("./clientes")
+require("./categoria")
+require("./produto")
