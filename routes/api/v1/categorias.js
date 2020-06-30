@@ -15,7 +15,7 @@ router.get("/:id",Validation(CategoriaValidation.show), categoriaController.show
 
 router.post("/", auth.required, LojaValidation.admin, Validation(CategoriaValidation.store), categoriaController.store) //Criando uma nova categoria
 router.put("/:id", auth.required, LojaValidation.admin, Validation(CategoriaValidation.update), categoriaController.update) // Alterando uma categora
-router.delete("/:id", auth.required, LojaValidation.admin, Validation(CategoriaValidation.remove),categoriaController.remove) // Deletando uma categora
+router.delete("/:id", auth.required, LojaValidation.admin, Validation(CategoriaValidation.remove    ),categoriaController.remove) // Deletando uma categora
 
 // ROTAS AO PRODUTO
 

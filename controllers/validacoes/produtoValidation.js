@@ -69,6 +69,16 @@ const ProdutoValidation =  {
         params: {
             id: Joi.string().required()
         }    
+    }, 
+    showAvaliacoes: {
+        params: {
+            id: Joi.string().required()
+        }    
+    },
+    showVariacoes: {
+        params: {
+            id: Joi.string().required()
+        }    
     }
 }
 

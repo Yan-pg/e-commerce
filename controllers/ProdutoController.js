@@ -3,6 +3,9 @@ const mongoose = require("mongoose")
 const Produto = mongoose.model("Produto")
 const Categoria = mongoose.model("Categoria")
 
+const Avaliacao = mongoose.model("Avaliacao")
+const Variacao = mongoose.model("Variacao")
+
 const getSort = (sortType) => {
     switch(sortType){
         case "alfabetica_a-z" : 
@@ -95,7 +98,7 @@ async store(req, res, next){
             if(!produto) return res.status(400).send({ error: "Produto não encontrado."})
             
             const novasImagens = req.files.map(item => item.filename)
-            produto.fotos = produto.fotos.filter(item => item.concat(novasImagens))
+            produto.fotos = produto.fotos.filter(item => item).concat(novasImagens)
             
             await produto.save()
             
@@ -197,6 +200,27 @@ async store(req, res, next){
             //"variacoes",
             "loja"])
             return res.send({ produto })
+        }catch(e){
+            next(e)
+        }
+    }
+
+
+    //AVALIACOES
+    //GET/:id/avaliacoes - showAvaliacoes
+
+    async showAvaliacoes(req, res, next){
+        try{
+            const avaliacoes = await Avaliacao.find({ produto: req.params.id })
+            return res.send({ avaliacoes })
+        }catch(e){
+            next(e)
+        }
+    }
+    async showVariacoes(req, res, next){
+        try{
+            const variacoes = await Variacao.find({ produto: req.params.id })
+            return res.send({ variacoes })
         }catch(e){
             next(e)
         }

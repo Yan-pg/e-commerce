@@ -20,10 +20,12 @@ router.get("/", Validation(ProdutoValidation.index), produtoController.index)
 router.get("/disponiveis", Validation(ProdutoValidation.indexDisponiveis), produtoController.indexDisponiveis)
 router.get("/search/:search", Validation(ProdutoValidation.search), produtoController.search)
 router.get("/:id", Validation(ProdutoValidation.show), produtoController.show)
+
 //VARIACOES
+router.get("/:id/variacoes", Validation(ProdutoValidation.showVariacoes), produtoController.showVariacoes)
 
 // AVALIACOES
-
+router.get("/:id/avaliacoes", Validation(ProdutoValidation.showAvaliacoes), produtoController.showAvaliacoes)
 
 
 module.exports = router

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { remove } = require("../models/loja")
 const Categoria = mongoose.model("Categoria")
 const Produto = mongoose.model("Produto")
 
@@ -73,16 +72,16 @@ class CategoriaController {
 
     async showProdutos(req, res, next){
         const { offset, limit } = req.query
-        try{
+        try{    
             const produtos = await Produto.paginate(
                 {categoria: req.params.id },
-                { offset: Number(offset) || 30, limit: Number(limit) || 30 }
+                { offset: Number(offset) || 0, limit: Number(limit) || 30 }
             )
             return res.send({ produtos })
         } catch(e){
             next(e)
         }
-    }
+    }       
     
     async updateProdutos(req, res, next){
         try{
@@ -91,7 +90,7 @@ class CategoriaController {
             if(produtos) categoria.produtos = produtos
             await categoria.save()
 
-            let _protudos = await Produto.dinf({
+            let _produtos = await Produto.find({
                 $or: [
                     { categoria: req.params.id },
                     { _id: { $in: produtos }}
@@ -100,7 +99,6 @@ class CategoriaController {
             _produtos = await Promise.all(_produtos.map(async (produto) => {
                 if(!produtos.includes(produto._id.toString())){
                     produto.categoria = null
-                    await produto.save()
                 }else{
                     produto.categoria = req.params.id
                 }
@@ -108,7 +106,7 @@ class CategoriaController {
                 return produto
             }))
 
-            const resultado = await Produto.paginate({categoria: req.params.id }, { offset: 0, limit: 20 })
+            const resultado = await Produto.paginate({categoria: req.params.id }, { offset: 0, limit: 30 })
             return({ produtos: resultado})
         }catch(e){
             next(e)
