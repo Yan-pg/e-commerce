@@ -107,7 +107,7 @@ class CategoriaController {
             }))
 
             const resultado = await Produto.paginate({categoria: req.params.id }, { offset: 0, limit: 30 })
-            return({ produtos: resultado})
+            return res.send({ produtos: resultado})
         }catch(e){
             next(e)
         }

@@ -9,6 +9,15 @@ const ClienteValidation = {
             limit: Joi.number()
         }
     },
+    searchPedidos: {
+        query: {
+            offset: Joi.number(),
+            limit: Joi.number()
+        },
+        params: {
+            search: Joi.string().required()
+        }     
+    },
     search: {
         query: {
             offset: Joi.number(),
@@ -19,6 +28,15 @@ const ClienteValidation = {
         }     
     },
     showAdmin: {
+        params: {
+            id: Joi.string().alphanum().length(24).required()
+        }
+    },
+    showPedidosCliente: {
+        query: {
+            offset: Joi.number(),
+            limit: Joi.number()
+        },
         params: {
             id: Joi.string().alphanum().length(24).required()
         }
