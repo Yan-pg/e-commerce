@@ -6,6 +6,9 @@ const Variacao = mongoose.model("Variacao")
 const Pagamento = mongoose.model("Pagamento")
 const Entrega = mongoose.model("Entrega")
 const Cliente = mongoose.model("Cliente")
+const RegistroPedido = mongoose.model("RegistroPedido")
+
+const { calcularFrete } = require("./integracoes/correios")
 
 const CarrinhoValidation = require("./validacoes/carrinhoValidation")
 
@@ -49,7 +52,8 @@ async showAdmin(req, res, next){
             item.variacao = await Variacao.findById(item.variacao)
             return item
         }))
-        return res.send({ pedido })
+        const registros = await RegistroPedido.find({ pedido: pedido._id})
+        return res.send({ pedido, registros })
         }catch(e){
             next(e)
         }
@@ -62,6 +66,12 @@ async showAdmin(req, res, next){
             if(!pedido) return res.status(400).send({ error: "Pedido não encotrado"})
             pedido.cancelado = true
 
+            const registroPedido = new RegistroPedido({
+                pedido: pedido._id,
+                tipo: "pedido",
+                situacao: "pedido_cancelado"
+            })
+            await registroPedido.save()
             // Registro de atividade = pedido cancelado
             // Enviar Email para cliente = pedido cancelado  
 
@@ -116,7 +126,7 @@ async showAdmin(req, res, next){
         }
     }
     
-        //get/:id show)
+        //get/:id show 
         async show(req, res, next){
             try{
                 const cliente = await Cliente.findOne({ usuario: req.payload.id})
@@ -128,8 +138,12 @@ async showAdmin(req, res, next){
                     item.variacao = await Variacao.findById(item.variacao)
                     return item
                 }))
-                return res.send({ pedido })
-                }catch(e){
+                const registros = await RegistroPedido.find({ pedido: pedido._id })
+
+                const resultado = await calcularFrete({ cep: "38740182", produtos: pedido.carrinho})
+
+                return res.send({ resultado })
+                }catch(e){ 
                     next(e)
                 }
             }
@@ -182,6 +196,13 @@ async showAdmin(req, res, next){
                 await novoPagamento.save()
                 await novaEntrega.save()
 
+                const registroPedido = new RegistroPedido({
+                    pedido: pedido._id,
+                    tipo: "pedido",
+                    situacao: "pedido_criado"
+                })
+                await registroPedido.save()
+
                 // Notificar via email - cliente e admin = novo pedido
                 return res.send({ pedido: Object.assign({}, pedido._doc, { entrega: novaEntrega, pagamento: novoPagamento, cliente }) })
             }catch(e){
@@ -199,6 +220,12 @@ async showAdmin(req, res, next){
                 if(!pedido) return res.status(400).send({ error: "Pedido não encotrado"})
                 pedido.cancelado = true
                 
+                const registroPedido = new RegistroPedido({
+                    pedido: pedido._id,
+                    tipo: "pedido",
+                    situacao: "pedido_cancelado"
+                })
+                await registroPedido.save()
                 // Registro de atividade = pedido cancelado
                 // Enviar Email para cliente = pedido cancelado  
                 

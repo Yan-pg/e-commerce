@@ -32,7 +32,7 @@ class ClienteController {
             const search = new RegExp(req.params.search, "i")
             const clientes = await Cliente.find({ loja, nome: { $regex: search} })
             const pedidos = await Pedido.paginate(
-                {loja, cliente: { $id: clientes.map(item => item._id )} },
+                {loja, cliente: { $in: clientes.map(item => item._id )} },
                 {offset, limit, populate: [ "cliente", "pagamento", "entrega"]}
             )
             pedidos.docs = await Promise.all(pedidos.docs.map(async (pedido) => {
