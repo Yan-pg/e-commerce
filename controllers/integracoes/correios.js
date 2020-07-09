@@ -1,7 +1,7 @@
 const Correios = require("node-correios"),
       correios = new Correios(),
       config = require("../../config/correios"),
-      { calcBox } = require("../../helpers/calcBox")
+      { calcBox } = require("../../helpers/calcBox");
 
 const calcularFrete = async ({ cep, produtos }) => {
 
@@ -12,11 +12,11 @@ const calcularFrete = async ({ cep, produtos }) => {
         larguraCm: item.variacao.entrega.dimensoes.larguraCm,
         quantidade: item.quantidade,
         preco: item.precoUnitario
-    }))
+    }));
     
-    const caixa = calcBox(_produtos)
-    const pesoTotal = _produtos.reduce((all, item) => all + ( item.pesoKg * item.quantidade ) , 0)
-    const valorFinal = _produtos.reduce((all, item) => all + ( item.preco * item.quantidade ) , 0)
+    const caixa = calcBox(_produtos);
+    const pesoTotal = _produtos.reduce((all, item) => all + ( item.pesoKg * item.quantidade ) , 0);
+    const valorFinal = _produtos.reduce((all, item) => all + ( item.preco * item.quantidade ) , 0);
     
     try {
         const resultados = await Promise.all(
@@ -31,15 +31,15 @@ const calcularFrete = async ({ cep, produtos }) => {
                     nVlAltura: caixa.altura,
                     nVlLargura: caixa.largura,
                     nVlDiamentro: 0,
-                    nVlValorDeclarado: valorFinal < 19.5 ? 19.5 : valorFinal
-                })
-                return { ...resultado[0] }
+                    nVlValorDeclarado: valorFinal < 20.5 ? 20.5 : valorFinal
+                });
+                return { ...resultado[0] };
             })
-        )
-        return resultados
+        );
+        return resultados;
     } catch(e){
-        console.log(e)
+        console.log(e);
     }
 }
 
-module.exports = { calcularFrete }
+module.exports = { calcularFrete };
